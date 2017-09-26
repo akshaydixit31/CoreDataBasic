@@ -27,6 +27,7 @@ class AddDataVc: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        emailTextField.delegate = self
         contactTextField.delegate = self
         
         let datePicker = UIDatePicker()
@@ -101,41 +102,78 @@ class AddDataVc: UIViewController {
 
 extension AddDataVc: UITextFieldDelegate {
     
-    func textField(_ textField: UITextField,
-                   shouldChangeCharactersIn range: NSRange,
-                   replacementString string: String) -> Bool {
-        
-        let currentText = contactTextField.text ?? ""
-        guard let stringRange = Range(range,
-                                      in: currentText) else {
-                                        return false
-                                        
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range:NSRange, replacementString string: String) -> Bool
+    {
+        if textField == contactTextField{
+            
+            let currentCharacterCount = contactTextField.text?.characters.count ?? 0
+            if (range.length + range.location > currentCharacterCount){
+                return false
+            }
+            let newLength = currentCharacterCount + string.characters.count - range.length
+            return newLength <= 10
+            
         }
-        
-        let updatedText = currentText.replacingCharacters(in: stringRange,
-                                                          with: string)
-        
-        return updatedText.count <= 10
-        
+       return true
     }
     
-    func textView(_ textView: UITextView,
-                  shouldChangeTextIn range: NSRange,
-                  replacementText text: String) -> Bool {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         
-        let currentText = textView.text ?? ""
-        guard let stringRange = Range(range,
-                                      in: currentText) else {
-                                        return false
-                                        
+        
+        if textField == emailTextField{
+            
+            guard let email = emailTextField.text else{
+                
+                return print("email not found:")
+                
+            }
+            
+            
+            if email.isEmpty{
+                
+                shakeBtn(emailTextField)
+                alert(title: "Error", message: "Email can't be empty:")
+                
+            }else{
+                
+                let emailValid = email.isValid(email)
+                
+                if !emailValid{
+                    
+                    shakeBtn(emailTextField)
+                    alert(title: "Error", message: "Enter a valid email:")
+                    
+                }
+            }
         }
         
-        let changedText = currentText.replacingCharacters(in: stringRange,
-                                                          with: text)
-        
-        return changedText.count <= 10
-        
+        if textField == contactTextField{
+            
+            guard let contact = contactTextField.text else{
+                
+                return print("contact not found:")
+                
+            }
+            
+            if contact.isEmpty{
+                
+                shakeBtn(contactTextField)
+                alert(title: "Error", message: "Contact can't be empty:")
+                
+            }else{
+                
+                let contactValid = contact.validateContact(value: contact)
+                if !contactValid{
+                    
+                    shakeBtn(contactTextField)
+                    alert(title: "Error", message: "Enter a valid Contact:")
+                    
+                }
+            }
+            
+        }
     }
+
     
     
     

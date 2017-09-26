@@ -21,7 +21,7 @@ class ViewController: UIViewController {
         let addData = UIStoryboard(name: "Main", bundle: nil)
         
         guard let addDataScene =  addData.instantiateViewController(withIdentifier: "AddDataVcId") as? AddDataVc else{
-            fatalError()
+            return print("Scene not found")
         }
         
         self.present(addDataScene,
@@ -34,7 +34,7 @@ class ViewController: UIViewController {
         let showData = UIStoryboard(name: "Main", bundle: nil)
         
         guard let showDataScene =  showData.instantiateViewController(withIdentifier: "ShowDataVcId") as? ShowDataVc else{
-            fatalError()
+            return print("Scene not found")
         }
         self.present(showDataScene, animated: true, completion: nil)
     }
